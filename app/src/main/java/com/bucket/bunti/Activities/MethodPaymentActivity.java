@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -190,6 +191,7 @@ public class MethodPaymentActivity extends AppCompatActivity {
         service.put("longitud", longitud);
         service.put("fecha", getDate());
         service.put("hora", getHour());
+        service.put("exactTime",getVarDate());
 
         // Add a new document with a generated ID
         //retrieve data
@@ -236,6 +238,21 @@ public class MethodPaymentActivity extends AppCompatActivity {
     private String getHourAmPm(){
         DateFormat hourFormat = new SimpleDateFormat("hh:mm a");
         return hourFormat.format(date)+"";
+    }
+
+    private String getVarDate(){
+        String exactTime = "";
+        Calendar fecha = Calendar.getInstance();
+        String year = String.valueOf(fecha.get(Calendar.YEAR));
+        String month = String.valueOf(fecha.get(Calendar.MONTH) + 1);
+        String day = String.valueOf(fecha.get(Calendar.DAY_OF_MONTH));
+        String hour = String.valueOf(fecha.get(Calendar.HOUR_OF_DAY));
+        String minute = String.valueOf(fecha.get(Calendar.MINUTE));
+        String second = String.valueOf(fecha.get(Calendar.SECOND));
+
+        exactTime = year+""+month+""+day+""+hour+""+minute+""+second;
+
+        return exactTime;
     }
 
     private void showMessage(String message){
