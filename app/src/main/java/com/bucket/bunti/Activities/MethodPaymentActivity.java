@@ -49,7 +49,8 @@ public class MethodPaymentActivity extends AppCompatActivity {
     private FirebaseAuth oAuth;
     private FirebaseUser user;
     private FirebaseFirestore dataBase;
-    private CollectionReference usuariosRef;
+    private CollectionReference servicesRef;
+    private DocumentReference userRef;
     private Date date = new Date();
     private String address, latitud,longitud;
     private Intent uiCheckPayment;
@@ -62,10 +63,12 @@ public class MethodPaymentActivity extends AppCompatActivity {
         Button btnCreditCard = (Button) findViewById(R.id.buttonCreditCard);
         Button btnPaypal = (Button) findViewById(R.id.buttonPayPal);
         uiCheckPayment = new Intent(this, CheckPayment.class);
-        oAuth       = FirebaseAuth.getInstance();
+        oAuth = FirebaseAuth.getInstance();
         user = oAuth.getCurrentUser();
         dataBase    = FirebaseFirestore.getInstance();
-        usuariosRef = dataBase.collection("usuarios");
+        servicesRef = dataBase.collection("services");
+        // Log.d("TESTING", user.getMetadata().toString());
+        userRef = dataBase.collection("usuarios").document(user.getUid());
 
         locationStart();
 
@@ -181,6 +184,7 @@ public class MethodPaymentActivity extends AppCompatActivity {
         address  = SharedPreferencesProject.retriveData(getApplicationContext(),"address");
         latitud  = SharedPreferencesProject.retriveData(getApplicationContext(),"latitud");
         longitud = SharedPreferencesProject.retriveData(getApplicationContext(),"longitud");
+        // userRef = dataBase.collection("usuarios").document(user.getUid());
 
         // Create a new user
         Map<String, Object> service = new HashMap<>();
@@ -192,11 +196,12 @@ public class MethodPaymentActivity extends AppCompatActivity {
         service.put("fecha", getDate());
         service.put("hora", getHour());
         service.put("exactTime",getVarDate());
+        service.put("userReference", userRef);
 
         // Add a new document with a generated ID
         //retrieve data
         String id_document = SharedPreferencesProject.retriveData(getApplicationContext(),"id_document");
-        usuariosRef.document(id_document).collection("services").add(service)
+        servicesRef.add(service)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
