@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             updateUserInfo(user, oAuth.getCurrentUser());
-                            CreateLoginAccount(user,email,phone,password);
+                            CreateLoginAccount(user, email, phone, oAuth.getUid());
                         } else {
                             enableComponents();
                             showMessage("Ocurrio un error, intenta más tarde");
@@ -134,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void CreateLoginAccount(final String user, String email,String phone, String password){
+    private void CreateLoginAccount(final String user, String email,String phone, String uid){
         // Create a new user
         Map<String, Object> usuario = new HashMap<>();
         usuario.put("nombre", user);
@@ -143,10 +143,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Add a new document with a generated ID
         dataBase.collection("usuarios")
-                .add(usuario)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(uid)
+                .set(usuario)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void documentReference) {
                         //after create account, create login auth
                         showMessage("¡Registro exitoso!");
                     }

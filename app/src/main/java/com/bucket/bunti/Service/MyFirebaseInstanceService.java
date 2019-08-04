@@ -8,12 +8,20 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.bucket.bunti.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -95,7 +103,28 @@ public class MyFirebaseInstanceService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-
         Log.d("TOKENFIREBASE",s);
+        FirebaseAuth oAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = oAuth.getCurrentUser();
+        FirebaseFirestore dataBase = FirebaseFirestore.getInstance();
+
+        Map<String, Object> instanceId = new HashMap<>();
+        instanceId.put("app_token", s);
+
+        dataBase.collection("usuarios")
+                .document(user.getUid())
+                .update(instanceId)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("INSTANCE_ID", "onNewToken executed");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("INSTANCE_ID", "Algo falló con el token");
+                    }
+                });
     }
 }
