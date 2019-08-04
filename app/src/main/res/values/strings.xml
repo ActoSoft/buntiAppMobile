@@ -27,7 +27,7 @@
     <string name="pago">Pago Satisfactorio</string>
     <string name="taxi">¡Taxista en camino!</string>
     <string name="paciente">Le pedimos ser paciente, por su atención, gracias</string>
-    <string name="tiempo">Tiempo de llegada: 5 min</string>
+    <string name="tiempo">Tiempo de llegada:</string>
     <string name="solicitud_enviada">Solicitud enviada</string>
     <string name="en_unos_momentos_se_te_notificar_cuando_tu_solicitud_haya_sido_aceptada">En unos momentos se te notificará cuando tu solicitud haya sido aceptada.</string>
     <string name="detalles">Detalles</string>
