@@ -2,8 +2,12 @@ package com.bucket.bunti.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +35,7 @@ public class MenuActivity extends AppCompatActivity {
     //FIREBASE
     private FirebaseAuth oAuth;
     private FirebaseUser userCurrent;
+    final private String basePhone = "7717958554";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +73,33 @@ public class MenuActivity extends AppCompatActivity {
         btnUserFound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentUserFound = new Intent(view.getContext(),UserFound.class);
-                startActivityForResult(intentUserFound,0);
+                checkCallPermissions();
             }
         });
+    }
+
+    private void checkCallPermissions() {
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE,}, 1000);
+        }
+        else {
+            callBase();
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 1000) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+               callBase();
+            }
+        }
+    }
+
+    private void callBase() {
+        Intent dialIntent = new Intent();
+        dialIntent.setAction(Intent.ACTION_CALL);
+        dialIntent.setData(Uri.parse("tel:"+basePhone));
+        startActivity(dialIntent);
     }
 
     private void sendTokenIdToServer() {
